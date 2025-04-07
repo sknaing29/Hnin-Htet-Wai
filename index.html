@@ -114,9 +114,8 @@
   </div>
 
   <script>
-    // === CHANGE NAME AND BIRTHDAY HERE ===
     const personName = "Hnin Htet Wai";
-    const birthdayString = "1999-05-29"; //YYYY-mm-dd
+    const birthdayString = "1999-05-29";
 
     function formatDate(date) {
       const dd = String(date.getDate()).padStart(2, '0');
@@ -169,7 +168,6 @@
       const totalMonths = (now.getFullYear() - birthDate.getFullYear()) * 12 + (now.getMonth() - birthDate.getMonth());
       const totalYears = now.getFullYear() - birthDate.getFullYear() - (now.getMonth() < birthDate.getMonth() || (now.getMonth() === birthDate.getMonth() && now.getDate() < birthDate.getDate()) ? 1 : 0);
 
-      // Calculate age in years, months, days
       let years = now.getFullYear() - birthDate.getFullYear();
       let months = now.getMonth() - birthDate.getMonth();
       let days = now.getDate() - birthDate.getDate();
@@ -184,7 +182,6 @@
         months += 12;
       }
 
-      // Update UI
       document.getElementById("years").textContent = years;
       document.getElementById("months").textContent = months;
       document.getElementById("days").textContent = days;
