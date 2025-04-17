@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Age & Time Calculator</title>
+  <style>
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+      background: linear-gradient(135deg, #FFB6C1, #FFF0F5); 
+      color: #5D4037; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px 0;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .container {
+
+      background-color: rgba(255, 255, 255, 0.75);
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(216, 27, 96, 0.15); 
+      padding: 30px;
+      max-width: 380px;
+      width: 95%;
+      backdrop-filter: blur(5px); 
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box;
+      border: 2px solid #FFC0CB; 
+    }
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+
+      border: 3px solid #FF6B6B;
+    }
+    .profile-info h1 {
+      font-size: 2em;
+      margin-bottom: 5px;
+
+      color: #D81B60;
+    }
+    .profile-info p {
+      font-size: 1.1em;
+
+      color: #5D4037;
+    }
+    .calculation-section {
+
+      background-color: rgba(255, 182, 193, 0.2); 
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+    }
+    .date-range {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+      font-size: 1em;
+
+      color: #7D5A50;
+    }
+    .age-details { }
+    .age-details h2 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+
+      color: #D81B60;
+    }
+    .age-details > p:first-of-type {
+       margin: 10px 0 20px 0;
+       font-size: 1.1em;
+
+       color: #5D4037;
+    }
+    .age-details strong {
+
+      color: #FF6B6B;
+    }
+    .age-stats-grid {
+      display: grid;
+      grid-template-columns: auto auto;
+      justify-content: center;
+      gap: 5px 10px;
+      margin-top: 15px;
+      font-size: 1.1em;
+
+      color: #5D4037;
+    }
+    .age-stats-grid span:nth-child(odd) {
+      text-align: right;
+
+      color: #7D5A50;
+      padding-right: 5px;
+    }
+    .age-stats-grid span:nth-child(even) {
+      text-align: left;
+      font-weight: bold;
+
+      color: #FF6B6B;
+      padding-left: 5px;
+    }
+    .note-section {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 0.9em;
+
+      color: #5D4037;
+
+      background-color: rgba(255, 182, 193, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      word-wrap: break-word;
+    }
+    .note-section a {
+
+      color: #2E7D32;
+      text-decoration: none;
+    }
+    .note-section a:hover {
+        text-decoration: underline;
+        color: #4CAF50; 
+    }
+
+    .fab-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+    }
+
+    .fab {
+
+      background-color: #FF6B6B;
+      color: white;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+      margin-left: 10px;
+      flex-shrink: 0;
+    }
+
+    .fab:hover {
+
+      background-color: #FF6B6B;
+      transform: scale(1.05);
+    }
+
+    .fab-option {
+
+        background-color: #90EE90; 
+        color: #333; 
+        padding: 8px 15px;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.9em;
+        white-space: nowrap;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        margin-left: 10px;
+        transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
+        opacity: 0;
+        transform: translateX(20px) scale(0.9);
+        pointer-events: none;
+    }
+
+    .fab-option.visible {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        pointer-events: auto;
+    }
+
+    .fab-option:hover {
+
+        background-color: #7CCD7C;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5); 
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+    .modal-content {
+
+      background-color: rgba(255, 240, 245, 0.95); 
+      backdrop-filter: blur(3px);
+      margin: auto;
+      padding: 25px 30px;
+      border: 1px solid #FFB6C1; 
+      border-radius: 10px;
+      width: 100%;
+      max-width: 450px;
+      color: #5D4037; 
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      box-sizing: border-box;
+    }
+    .close-button {
+
+      color: #AAAAAA;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 5px;
+    }
+    .close-button:hover,
+    .close-button:focus {
+
+      color: #D81B60;
+      text-decoration: none;
+    }
+    .modal h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+
+        color: #D81B60;
+        text-align: center;
+    }
+    .modal label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+
+        color: #7D5A50;
+    }
+    .modal input[type="date"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #FFB6C1; 
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.8); 
+        color: #5D4037; 
+        font-size: 1em;
+        box-sizing: border-box;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+         appearance: none;
+         position: relative; 
+    }
+    .modal input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.6) sepia(0.4) saturate(3) hue-rotate(300deg); 
+        cursor: pointer;
+        opacity: 0.7;
+        padding: 5px;
+
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+     .modal input[type="date"]::after {
+         content: none; 
+     }
+    .modal-result {
+        margin-top: 20px;
+        padding: 15px;
+
+        background-color: rgba(255, 223, 230, 0.5);
+        border-radius: 8px;
+        min-height: 50px;
+
+        color: #5D4037;
+        font-size: 1em;
+        line-height: 1.6;
+    }
+    .modal-result strong { color: #D81B60; } 
+    .modal-result ul { padding-left: 20px; margin: 0; }
+    .modal-result li { margin-bottom: 5px; }
+
+    #birthday-animation-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 999;
+    }
+
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+
+        background-color: #FF6B6B; 
+        opacity: 0.8; 
+        border-radius: 50%;
+        animation: fall linear infinite;
+        top: -20px;
+    }
+
+    @keyframes fall {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 0.8;
+        }
+        100% {
+
+            transform: translateY(105vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    .confetti-text {
+        background-color: transparent !important;
+        width: auto !important;
+        height: auto !important;
+        border-radius: 0 !important;
+        font-size: 16px; 
+        font-weight: bold;
+        color: #D81B60; 
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7); 
+        line-height: 1;
+        position: absolute;
+        opacity: 0.9;
+        animation: fall linear infinite;
+        top: -20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="birthday-animation-container"></div>
+
+  <div class="container">
+    <div class="profile-header">
+      <img id="profileImage" src="" alt="">
+      <div class="profile-info">
+        <h1 id="personNameDisplay"></h1>
+        <p id="dateOfBirthDisplay"></p>
+      </div>
+    </div>
+
+    <div class="calculation-section">
+      <div class="date-range">
+        <span id="startDateDisplay"></span>
+        <span>→</span>
+        <span id="endDateDisplay"></span>
+      </div>
+
+      <div class="age-details">
+        <h2 id="personNameAgeDisplay"></h2>
+        <p><strong><span id="yearsDisplay">0</span> years <span id="monthsDisplay">0</span> months <span id="daysDisplay">0</span> days</strong></p>
+
+        <div class="age-stats-grid">
+          <span>Total Years:</span> <span id="totalYearsDisplay">0</span>
+          <span>Total Months:</span> <span id="totalMonthsDisplay">0</span>
+          <span>Total Weeks:</span> <span id="totalWeeksDisplay">0</span>
+          <span>Total Days:</span> <span id="totalDaysDisplay">0</span>
+          <span>Total Hours:</span> <span id="totalHoursDisplay">0</span>
+          <span>Total Minutes:</span> <span id="totalMinutesDisplay">0</span>
+          <span>Total Seconds:</span> <span id="totalSecondsDisplay">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-section">
+      <p><strong>Note:</strong></p>
+      <div id="noteText"></div>
+    </div>
+  </div>
+
+  <div class="fab-container">
+      <div class="fab" id="mainFab" aria-label="Open Actions" title="Actions">
+        +
+      </div>
+      <div class="fab-option" id="fabAgeCalc" title="Age Calculator" role="button">Age Calculator</div>
+      <div class="fab-option" id="fabMilestone" title="Coming Milestones" role="button">Coming Milestones</div>
+  </div>
+
+  <div id="ageCalculatorModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="ageModalTitle">
+    <div class="modal-content">
+      <span class="close-button" id="closeAgeModalBtn" aria-label="Close">&times;</span>
+      <h2 id="ageModalTitle">Age Calculator</h2>
+      <label for="ageCalcBirthday">Birthday:</label>
+      <input type="date" id="ageCalcBirthday">
+      <label for="ageCalcToday">Calculate As Of:</label>
+      <input type="date" id="ageCalcToday">
+      <div id="ageCalcResult" class="modal-result">Enter both dates to calculate.</div>
+    </div>
+  </div>
+
+  <div id="milestoneModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="milestoneModalTitle">
+    <div class="modal-content">
+       <span class="close-button" id="closeMilestoneModalBtn" aria-label="Close">&times;</span>
+       <h2 id="milestoneModalTitle">Coming Milestones</h2>
+       <label for="milestoneBirthday">Birthday:</label>
+       <input type="date" id="milestoneBirthday">
+       <div id="milestoneResult" class="modal-result">Enter birthday to see upcoming milestones.</div>
+    </div>
+  </div>
+
+  <script>
+
+    const personName = "Hnin Htet Wai";
+    const birthdayString = "1999-05-29";
+    const profilePictureUrl = "https://raw.githubusercontent.com/sknaing29/Hnin-Htet-Wai/refs/heads/main/profile_image.jpg";
+    const noteContent = `Facebook Acc: <a href="https://www.facebook.com/profile.php?id=100073284593292" target="_blank" rel="noopener noreferrer">100073284593292</a><br>
+                         Tiktok Acc: <a href="https://www.tiktok.com/@htet29599" target="_blank" rel="noopener noreferrer">@htet29599</a><br>
+                         Go to: <a href="../">Blue Theme 💙</a>`;
+
+    const profileImage = document.getElementById("profileImage");
+    const personNameDisplay = document.getElementById("personNameDisplay");
+    const personNameAgeDisplay = document.getElementById("personNameAgeDisplay");
+    const dateOfBirthDisplay = document.getElementById("dateOfBirthDisplay");
+    const startDateDisplay = document.getElementById("startDateDisplay");
+    const endDateDisplay = document.getElementById("endDateDisplay");
+    const yearsDisplay = document.getElementById("yearsDisplay");
+    const monthsDisplay = document.getElementById("monthsDisplay");
+    const daysDisplay = document.getElementById("daysDisplay");
+    const totalYearsDisplay = document.getElementById("totalYearsDisplay");
+    const totalMonthsDisplay = document.getElementById("totalMonthsDisplay");
+    const totalWeeksDisplay = document.getElementById("totalWeeksDisplay");
+    const totalDaysDisplay = document.getElementById("totalDaysDisplay");
+    const totalHoursDisplay = document.getElementById("totalHoursDisplay");
+    const totalMinutesDisplay = document.getElementById("totalMinutesDisplay");
+    const totalSecondsDisplay = document.getElementById("totalSecondsDisplay");
+    const noteText = document.getElementById("noteText");
+
+    const mainFab = document.getElementById('mainFab');
+    const fabOptions = document.querySelectorAll('.fab-option');
+    const ageCalcModal = document.getElementById('ageCalculatorModal');
+    const milestoneModal = document.getElementById('milestoneModal');
+    const fabAgeCalc = document.getElementById('fabAgeCalc');
+    const fabMilestone = document.getElementById('fabMilestone');
+    const ageCalcBirthdayInput = document.getElementById('ageCalcBirthday');
+    const ageCalcTodayInput = document.getElementById('ageCalcToday');
+    const ageCalcResultDiv = document.getElementById('ageCalcResult');
+    const milestoneBirthdayInput = document.getElementById('milestoneBirthday');
+    const milestoneResultDiv = document.getElementById('milestoneResult');
+    const closeAgeModalBtn = document.getElementById('closeAgeModalBtn');
+    const closeMilestoneModalBtn = document.getElementById('closeMilestoneModalBtn');
+
+    const birthdayAnimationContainer = document.getElementById('birthday-animation-container');
+    let isBirthdayAnimationRunning = false;
+
+    const confettiColors = ['#FF6B6B', '#FFB6C1', '#90EE90', '#FFFFFF', '#FFFACD']; 
+    const confettiCount = 100;
+
+    profileImage.src = profilePictureUrl;
+    profileImage.alt = `Profile picture of ${personName}`;
+    personNameDisplay.textContent = personName;
+    personNameAgeDisplay.textContent = "Age Details";
+    noteText.innerHTML = noteContent;
+
+    function formatDate(date) {
+      if (!(date instanceof Date) || isNaN(date)) return "Invalid Date";
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const yyyy = date.getFullYear();
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
+    function formatDateYYYYMMDD(date) {
+        if (!(date instanceof Date) || isNaN(date)) return "";
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function getDayName(date) {
+      if (!(date instanceof Date) || isNaN(date)) return "";
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      return days[date.getDay()];
+    }
+
+    function getZodiac(month, day) {
+      const zodiacSigns = [
+          { sign: "Capricorn", emoji: "♑", lastDay: 19 }, { sign: "Aquarius", emoji: "♒", lastDay: 18 },
+          { sign: "Pisces", emoji: "♓", lastDay: 20 },    { sign: "Aries", emoji: "♈", lastDay: 19 },
+          { sign: "Taurus", emoji: "♉", lastDay: 20 },    { sign: "Gemini", emoji: "♊", lastDay: 20 },
+          { sign: "Cancer", emoji: "♋", lastDay: 22 },    { sign: "Leo", emoji: "♌", lastDay: 22 },
+          { sign: "Virgo", emoji: "♍", lastDay: 22 },    { sign: "Libra", emoji: "♎", lastDay: 22 },
+          { sign: "Scorpio", emoji: "♏", lastDay: 21 },   { sign: "Sagittarius", emoji: "♐", lastDay: 21 }
+        ];
+      if (month < 0 || month > 11) return "";
+      const adjustedMonthIndex = month;
+      const zodiac = day <= zodiacSigns[adjustedMonthIndex].lastDay ? zodiacSigns[adjustedMonthIndex] : zodiacSigns[(adjustedMonthIndex + 1) % 12];
+      return `${zodiac.sign} ${zodiac.emoji}`;
+    }
+
+    function isLeap(year) {
+       return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+    }
+
+    function calculateAgeDifference(startDate, endDate) {
+        if (!(startDate instanceof Date) || isNaN(startDate) || !(endDate instanceof Date) || isNaN(endDate) || endDate < startDate) {
+            return { years: 0, months: 0, days: 0, error: true };
+        }
+
+        let years = endDate.getFullYear() - startDate.getFullYear();
+        let months = endDate.getMonth() - startDate.getMonth();
+        let days = endDate.getDate() - startDate.getDate();
+
+        if (days < 0) {
+            months--;
+            const lastDayOfPrevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
+            days += lastDayOfPrevMonth;
+        }
+
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        return { years, months, days, error: false };
+    }
+
+    function startBirthdayAnimation() {
+        if (isBirthdayAnimationRunning || !birthdayAnimationContainer) return;
+        isBirthdayAnimationRunning = true;
+        birthdayAnimationContainer.innerHTML = '';
+
+        const birthdayTexts = ['🍓', '🌸', '💖', 'Happy BDay!']; 
+        const textProbability = 0.15;
+
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            let isText = Math.random() < textProbability;
+
+            if (isText) {
+                confetti.classList.add('confetti-text');
+                confetti.textContent = birthdayTexts[Math.floor(Math.random() * birthdayTexts.length)];
+                confetti.style.animationDuration = `${Math.random() * 3 + 5}s`;
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.left = `${Math.random() * 95}%`;
+            } else {
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                const size = Math.random() * 5 + 8;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '0'; 
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                } else {
+                    confetti.style.borderRadius = '50%';
+                }
+            }
+
+            birthdayAnimationContainer.appendChild(confetti);
+        }
+
+        if (!document.title.includes("Happy Birthday")) {
+
+            document.title = `🍓 Happy Birthday ${personName}! | Age & Time Calculator`;
+        }
+    }
+
+    function stopBirthdayAnimation() {
+        if (!isBirthdayAnimationRunning || !birthdayAnimationContainer) return;
+        isBirthdayAnimationRunning = false;
+        birthdayAnimationContainer.innerHTML = '';
+
+        if (document.title.includes("Happy Birthday")) {
+            document.title = "Age & Time Calculator"; 
+        }
+    }
+
+    function calculateAll() {
+      const parts = birthdayString.split('-');
+      if (parts.length !== 3) { console.error("Invalid birthdayString format"); return; }
+
+      const birthYear = parseInt(parts[0], 10);
+      const birthMonthIndex = parseInt(parts[1], 10) - 1;
+      const birthDay = parseInt(parts[2], 10);
+
+      const now = new Date();
+      const currentMonthIndex = now.getMonth();
+      const currentDay = now.getDate();
+
+      const birthDateUTC = new Date(Date.UTC(birthYear, birthMonthIndex, birthDay));
+      const nowUTC = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds()));
+
+      if (isNaN(birthDateUTC)) { console.error("Invalid birth date created"); return; }
+
+      const birthDateLocal = new Date(birthYear, birthMonthIndex, birthDay);
+      const birthDayName = getDayName(birthDateLocal);
+      const zodiac = getZodiac(birthMonthIndex, birthDay);
+      const currentDayName = getDayName(now);
+
+      dateOfBirthDisplay.textContent = `${formatDate(birthDateLocal)} (${birthDayName}, ${zodiac})`;
+      startDateDisplay.textContent = `${formatDate(birthDateLocal)} (${birthDayName})`;
+      endDateDisplay.textContent = `${formatDate(now)} (${currentDayName})`;
+
+      const diffInMilliseconds = nowUTC - birthDateUTC;
+      const totalSeconds = Math.max(0, Math.floor(diffInMilliseconds / 1000));
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const totalHours = Math.floor(totalMinutes / 60);
+      const totalDays = Math.floor(totalHours / 24);
+      const totalWeeks = Math.floor(totalDays / 7);
+
+      const age = calculateAgeDifference(birthDateUTC, nowUTC);
+
+      const totalYearsApprox = age.years;
+      const totalMonthsApprox = age.years * 12 + age.months;
+
+      yearsDisplay.textContent = age.years;
+      monthsDisplay.textContent = age.months;
+      daysDisplay.textContent = age.days;
+
+      totalYearsDisplay.textContent = totalYearsApprox.toLocaleString();
+      totalMonthsDisplay.textContent = totalMonthsApprox.toLocaleString();
+      totalWeeksDisplay.textContent = totalWeeks.toLocaleString();
+      totalDaysDisplay.textContent = totalDays.toLocaleString();
+      totalHoursDisplay.textContent = totalHours.toLocaleString();
+      totalMinutesDisplay.textContent = totalMinutes.toLocaleString();
+      totalSecondsDisplay.textContent = totalSeconds.toLocaleString();
+
+      if (currentMonthIndex === birthMonthIndex && currentDay === birthDay) {
+          startBirthdayAnimation();
+      } else {
+          stopBirthdayAnimation();
+      }
+    }
+
+    calculateAll();
+    setInterval(calculateAll, 1000);
+
+    function toggleFabOptions() {
+        let isOpening = !fabOptions[0].classList.contains('visible');
+        fabOptions.forEach(option => {
+            option.classList.toggle('visible');
+        });
+        mainFab.style.transform = isOpening ? 'rotate(45deg)' : 'rotate(0deg)';
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            if (modalId === 'ageCalculatorModal') { calculateCustomAge(); }
+            else if (modalId === 'milestoneModal') { calculateUpcomingMilestones(); }
+        }
+        fabOptions.forEach(option => option.classList.remove('visible'));
+        mainFab.style.transform = 'rotate(0deg)';
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) { modal.style.display = 'none'; }
+    }
+
+    mainFab.addEventListener('click', toggleFabOptions);
+    fabAgeCalc.addEventListener('click', () => openModal('ageCalculatorModal'));
+    fabMilestone.addEventListener('click', () => openModal('milestoneModal'));
+    closeAgeModalBtn.addEventListener('click', () => closeModal('ageCalculatorModal'));
+    closeMilestoneModalBtn.addEventListener('click', () => closeModal('milestoneModal'));
+
+    window.addEventListener('click', (event) => {
+        if (event.target === ageCalcModal) { closeModal('ageCalculatorModal'); }
+        if (event.target === milestoneModal) { closeModal('milestoneModal'); }
+    });
+
+    function calculateCustomAge() {
+        const birthString = ageCalcBirthdayInput.value;
+        const todayString = ageCalcTodayInput.value;
+
+        if (!birthString || !todayString) {
+            ageCalcResultDiv.textContent = "Please select both dates.";
+            return;
+        }
+
+        const birthParts = birthString.split('-');
+        const todayParts = todayString.split('-');
+
+        const birthDate = new Date(Date.UTC(parseInt(birthParts[0], 10), parseInt(birthParts[1], 10) - 1, parseInt(birthParts[2], 10)));
+        const todayDate = new Date(Date.UTC(parseInt(todayParts[0], 10), parseInt(todayParts[1], 10) - 1, parseInt(todayParts[2], 10)));
+
+        if (isNaN(birthDate) || isNaN(todayDate)) {
+            ageCalcResultDiv.textContent = "Invalid date format selected.";
+            return;
+        }
+        if (todayDate < birthDate) {
+            ageCalcResultDiv.textContent = "'Calculate As Of' date cannot be before the Birthday.";
+            return;
+        }
+
+        const age = calculateAgeDifference(birthDate, todayDate);
+
+        if (age.error) {
+             ageCalcResultDiv.textContent = "Could not calculate age difference.";
+        } else {
+             ageCalcResultDiv.innerHTML = `Age: <strong>${age.years}</strong> years, <strong>${age.months}</strong> months, <strong>${age.days}</strong> days`;
+        }
+    }
+    ageCalcBirthdayInput.addEventListener('change', calculateCustomAge);
+    ageCalcTodayInput.addEventListener('change', calculateCustomAge);
+
+    function calculateUpcomingMilestones() {
+        const birthString = milestoneBirthdayInput.value;
+        milestoneResultDiv.innerHTML = "";
+
+        if (!birthString) {
+            milestoneResultDiv.textContent = "Please select a birthday.";
+            return;
+        }
+        const birthParts = birthString.split('-');
+        const birthDate = new Date(Date.UTC(parseInt(birthParts[0], 10), parseInt(birthParts[1], 10) - 1, parseInt(birthParts[2], 10)));
+
+        if (isNaN(birthDate)) {
+            milestoneResultDiv.textContent = "Invalid birthday format selected.";
+            return;
+        }
+
+        const today = new Date();
+        const todayUTCStart = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+
+        if (todayUTCStart < birthDate) {
+            milestoneResultDiv.textContent = "Birthday cannot be in the future.";
+            return;
+        }
+
+        let resultsHtml = "<ul>";
+        const dayMillis = 86400000;
+
+        const currentDays = Math.floor((todayUTCStart - birthDate) / dayMillis);
+        const dayMilestones = [1, 7, 10, 100, 200, 300, 400, 500, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000, 25000, 30000];
+        let foundDayMilestone = false;
+        for (const days of dayMilestones) {
+            if (days > currentDays) {
+                const milestoneDateUTC = new Date(birthDate.getTime() + days * dayMillis);
+                const milestoneDateLocal = new Date(milestoneDateUTC.getUTCFullYear(), milestoneDateUTC.getUTCMonth(), milestoneDateUTC.getUTCDate());
+                 resultsHtml += `<li><strong>${days.toLocaleString()} Days</strong> old on ${formatDate(milestoneDateLocal)} (${getDayName(milestoneDateLocal)})</li>`;
+                foundDayMilestone = true;
+                break;
+            }
+        }
+        if (!foundDayMilestone) resultsHtml += `<li>No upcoming standard day milestones found in list.</li>`;
+
+        const currentAgeForMonths = calculateAgeDifference(birthDate, todayUTCStart);
+        let currentMonths = currentAgeForMonths.years * 12 + currentAgeForMonths.months;
+        const monthMilestones = [1, 10, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000];
+        let foundMonthMilestone = false;
+        for (const months of monthMilestones) {
+            if (months > currentMonths) {
+                let milestoneYear = birthDate.getUTCFullYear() + Math.floor((birthDate.getUTCMonth() + months) / 12);
+                let milestoneMonth = (birthDate.getUTCMonth() + months) % 12;
+                let milestoneDay = birthDate.getUTCDate();
+                let daysInTargetMonth = new Date(Date.UTC(milestoneYear, milestoneMonth + 1, 0)).getUTCDate();
+                if (milestoneDay > daysInTargetMonth) {
+                    milestoneDay = daysInTargetMonth;
+                }
+                const milestoneDateUTC = new Date(Date.UTC(milestoneYear, milestoneMonth, milestoneDay));
+                 const milestoneDateLocal = new Date(milestoneDateUTC.getUTCFullYear(), milestoneDateUTC.getUTCMonth(), milestoneDateUTC.getUTCDate());
+                if (milestoneDateUTC > todayUTCStart) {
+                     resultsHtml += `<li><strong>${months.toLocaleString()} Months</strong> old on ${formatDate(milestoneDateLocal)} (${getDayName(milestoneDateLocal)})</li>`;
+                     foundMonthMilestone = true;
+                     break;
+                }
+            }
+        }
+        if (!foundMonthMilestone) resultsHtml += `<li>No upcoming standard month milestones found in list.</li>`;
+
+        const currentYears = currentAgeForMonths.years;
+        const yearMilestones = [1, 5, 10, 15, 18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];
+        let foundYearMilestone = false;
+        for (const years of yearMilestones) {
+            if (years > currentYears) {
+                let milestoneYear = birthDate.getUTCFullYear() + years;
+                let milestoneMonth = birthDate.getUTCMonth();
+                let milestoneDay = birthDate.getUTCDate();
+                if (milestoneMonth === 1 && milestoneDay === 29 && !isLeap(milestoneYear)) {
+                    milestoneDay = 28;
+                }
+                const milestoneDateUTC = new Date(Date.UTC(milestoneYear, milestoneMonth, milestoneDay));
+                 const milestoneDateLocal = new Date(milestoneDateUTC.getUTCFullYear(), milestoneDateUTC.getUTCMonth(), milestoneDateUTC.getUTCDate());
+                if (milestoneDateUTC >= todayUTCStart) {
+                     resultsHtml += `<li><strong>${years} Years</strong> old on ${formatDate(milestoneDateLocal)} (${getDayName(milestoneDateLocal)})</li>`;
+                     foundYearMilestone = true;
+                     break;
+                }
+            }
+        }
+        if (!foundYearMilestone) resultsHtml += `<li>No upcoming standard year milestones found in list.</li>`;
+
+        let nextBirthdayYear = todayUTCStart.getUTCFullYear();
+        let nextBirthdayMonth = birthDate.getUTCMonth();
+        let nextBirthdayDay = birthDate.getUTCDate();
+        let nextBirthdayUTC = new Date(Date.UTC(nextBirthdayYear, nextBirthdayMonth, nextBirthdayDay));
+        if (nextBirthdayUTC < todayUTCStart) {
+            nextBirthdayYear++;
+            nextBirthdayUTC.setUTCFullYear(nextBirthdayYear);
+        }
+        if (birthDate.getUTCMonth() === 1 && birthDate.getUTCDate() === 29 && !isLeap(nextBirthdayYear)) {
+             nextBirthdayUTC.setUTCDate(28);
+        }
+         const daysUntilNextBirthday = nextBirthdayUTC >= todayUTCStart ? Math.ceil((nextBirthdayUTC - todayUTCStart) / dayMillis) : 0;
+        const nextAge = nextBirthdayYear - birthDate.getUTCFullYear();
+         const nextBirthdayLocal = new Date(nextBirthdayUTC.getUTCFullYear(), nextBirthdayUTC.getUTCMonth(), nextBirthdayUTC.getUTCDate());
+        resultsHtml += `<li><strong>Next Birthday (${nextAge})</strong> on ${formatDate(nextBirthdayLocal)} (${getDayName(nextBirthdayLocal)}) - ${daysUntilNextBirthday} day(s) away</li>`;
+
+        resultsHtml += "</ul>";
+        milestoneResultDiv.innerHTML = resultsHtml;
+    }
+    milestoneBirthdayInput.addEventListener('change', calculateUpcomingMilestones);
+
+    ageCalcTodayInput.value = formatDateYYYYMMDD(new Date());
+    ageCalcBirthdayInput.value = birthdayString;
+    milestoneBirthdayInput.value = birthdayString;
+    calculateCustomAge();
+    calculateUpcomingMilestones();
+
+  </script>
+</body>
+</html>
